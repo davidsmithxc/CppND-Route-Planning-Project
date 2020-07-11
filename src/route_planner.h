@@ -25,6 +25,7 @@ class RoutePlanner {
     std::vector<RouteModel::Node*> open_list;
     RouteModel::Node *start_node;
     RouteModel::Node *end_node;
+    // bool CompareNodes(RouteModel::Node *a, RouteModel::Node *b);
 
     float distance = 0.0f;
     RouteModel &m_Model;
