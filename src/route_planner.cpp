@@ -52,8 +52,9 @@ void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
 
     for(RouteModel::Node *neighbor: current_node->neighbors) {
         neighbor->h_value = CalculateHValue(neighbor);
-        neighbor->g_value = current_node->g_value + 1;
+        neighbor->g_value = current_node->g_value + current_node->distance(*neighbor);
         neighbor->parent = current_node;
+        neighbor->visited = true;
         this->open_list.push_back(neighbor);
     }
 
@@ -90,11 +91,13 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
     std::vector<RouteModel::Node> path_found;
 
     // TODO: Implement your solution here.
-    while(current_node->parent != this->start_node){
+    while(current_node != this->start_node){
         path_found.push_back(*current_node);
-        distance += current_node->distance(*current_node->parent);
+        distance += current_node->g_value;
         current_node = current_node->parent;
     }
+
+    path_found.push_back(*current_node);
 
     distance *= m_Model.MetricScale(); // Multiply the distance by the scale of the map to get meters.
     std::reverse(path_found.begin(), path_found.end());
@@ -112,17 +115,21 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
 
 void RoutePlanner::AStarSearch() {
     RouteModel::Node *current_node = nullptr;
+    current_node = this->start_node;
 
     // TODO: Implement your solution here.
-    // pseudo code outline:
-    // initialize open list with starting node
-    //     -ensure starting node has h value, g value
-    // add neighbors of starting node to open list
-    // while this->openlist is not empty
-    //     get next node; check if new current node is end node
-    //         break while loop
-    //     expand node; i.e. add neighbors
-    // construc final path
+    this->AddNeighbors(current_node);
+    while(!this->open_list.empty()){
+        current_node = this->NextNode();
+        current_node->visited = true;
+        if(current_node == this->end_node){
+            break;
+        }
+
+        this->AddNeighbors(current_node);
+    }
+
+    m_Model.path = this->ConstructFinalPath(current_node);
 
 
 }

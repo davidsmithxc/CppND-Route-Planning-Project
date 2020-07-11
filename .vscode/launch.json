@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/build/OSM_A_star_search",
             "args": [],
-            "stopAtEntry": true,
+            "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build",
             "environment": [],
             "externalConsole": false,
