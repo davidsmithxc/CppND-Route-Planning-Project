@@ -2,9 +2,11 @@
 #include <algorithm>
 
 // Helper function for sorting nodes
-bool CompareNodes(RouteModel::Node *a, RouteModel::Node *b) {
+bool CompareNodes(const RouteModel::Node *a, const RouteModel::Node *b) {
     // sort by highest to lowest f-value first
-    return ((a->g_value + a->h_value) > (b->g_value + b->h_value));
+    float dist_a = (a->g_value + a->h_value);
+    float dist_b = (b->g_value + b->h_value);
+    return ( dist_a > dist_b );
 }
 
 RoutePlanner::RoutePlanner(RouteModel &model, float start_x, float start_y, float end_x, float end_y): m_Model(model) {
@@ -93,7 +95,7 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
     // TODO: Implement your solution here.
     while(current_node != this->start_node){
         path_found.push_back(*current_node);
-        distance += current_node->g_value;
+        distance += current_node->distance(*current_node->parent);
         current_node = current_node->parent;
     }
 
@@ -116,6 +118,7 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
 void RoutePlanner::AStarSearch() {
     RouteModel::Node *current_node = nullptr;
     current_node = this->start_node;
+    current_node->visited = true;
 
     // TODO: Implement your solution here.
     this->AddNeighbors(current_node);
