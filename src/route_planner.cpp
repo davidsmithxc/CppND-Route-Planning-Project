@@ -4,9 +4,7 @@
 // Helper function for sorting nodes
 bool CompareNodes(const RouteModel::Node *a, const RouteModel::Node *b) {
     // sort by highest to lowest f-value first
-    float dist_a = (a->g_value + a->h_value);
-    float dist_b = (b->g_value + b->h_value);
-    return ( dist_a > dist_b );
+    return (a->g_value + a->h_value) > (b->g_value + b->h_value);
 }
 
 RoutePlanner::RoutePlanner(RouteModel &model, float start_x, float start_y, float end_x, float end_y): m_Model(model) {
@@ -37,8 +35,7 @@ RoutePlanner::RoutePlanner(RouteModel &model, float start_x, float start_y, floa
 //  member variable x and y, but I don't see these in the definition of Node.
 
 float RoutePlanner::CalculateHValue(RouteModel::Node const *node) {
-    float h = (*node).distance(*end_node);
-    return h;
+    return (*node).distance(*end_node);
 }
 
 
